@@ -18,6 +18,11 @@ with Glib.Object;
 with Glib.Properties;
 with Cairo;
 package bbs.widget.dial is
+
+   author : constant String := "Brent Seidel";
+   version : constant String := "V00.01";
+   date : constant String := "2-Feb-2016";
+
    --
    -- Define a widget for a dial.  The dial has a number of options and not all
    -- combinations of options make sense.  In some cases unsexpected behaviour
