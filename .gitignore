@@ -4,3 +4,9 @@
 *.cswi
 
 *.o
+
+*.cgpr
+
+*.db
+
+*.xml
