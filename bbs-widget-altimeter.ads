@@ -19,9 +19,9 @@ with Glib.Properties;
 with Cairo;
 package bbs.widget.altimeter is
 
-   author : constant String := "Brent Seidel";
-   version : constant String := "V00.01";
-   date : constant String := "15-Mar-2016";
+--   author : constant String := "Brent Seidel";
+--   version : constant String := "V00.01";
+--   date : constant String := "15-Mar-2016";
 
    --
    -- Define a widget for an altimeter.  The altimeter has a number of options and not all
@@ -62,6 +62,14 @@ package bbs.widget.altimeter is
    -- callbacks.
    --
    procedure set_slew(self : in out bbs_altimeter_record'Class; value : Boolean; rate : Float);
+   --
+   -- Set the altimeter setting.  Note that this is display only.  The altitude
+   -- calculations are done by the calling program.  This widget only does the
+   -- display.  The altimeter setting is passed in as a float, converted to an
+   -- integer, and then to a string.  Just because you can pass in a particular
+   -- value doesn't mean that you should.
+   --
+   procedure altimeter_setting(self : in out bbs_altimeter_record'Class; value : Float);
 
 private
    type bbs_altimeter_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with
@@ -71,6 +79,7 @@ private
          value : Float;
          slew_rate : Float;
          pointer : Float;
+         setting : Float;
          failed : Boolean;
          slew : Boolean;
          callback_id : Glib.Guint;
@@ -83,10 +92,7 @@ private
    function slew_handler(Self : not null access Gtk.Widget.Gtk_Widget_Record'Class;
                          Frame_Clock : not null access Gdk.Frame_Clock.Gdk_Frame_Clock_Record'Class) return Boolean;
    function draw_altimeter(Self : access Gtk.Widget.Gtk_Widget_Record'Class; context : Cairo.Cairo_Context) return boolean;
-   procedure draw_altimeter_arc(self : access bbs_altimeter_record'Class; context : Cairo.Cairo_Context);
-   procedure draw_ticks(self : access bbs_altimeter_record'Class; context : Cairo.Cairo_Context);
+   procedure draw_Background(self : access bbs_altimeter_record'Class; context : Cairo.Cairo_Context);
    procedure draw_failed(Self : access bbs_altimeter_record'Class; context : Cairo.Cairo_Context);
-   procedure draw_pointer(Self : access bbs_altimeter_record'Class; context : Cairo.Cairo_Context);
---   function compute_angle(Self : access bbs_altimeter_record'Class; value : Float) return Float;
-
+   procedure draw_pointers(Self : access bbs_altimeter_record'Class; context : Cairo.Cairo_Context);
 end;
