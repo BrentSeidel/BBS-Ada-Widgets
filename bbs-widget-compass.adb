@@ -1,41 +1,40 @@
-package body bbs.widget.altimeter is
+package body bbs.widget.compass is
 
    function Get_Type return Glib.GType is
    begin
        Glib.Object.Initialize_Class_Record
          (Ancestor     => Gtk.Drawing_Area.Get_Type,
           Class_Record => Klass,
-          Type_Name    => "bbs_altimeter",
+          Type_Name    => "bbs_compass",
           Signals      => Glib.Object.No_Signals,
           Parameters   => Glib.Object.Null_Parameter_Types);
       return Klass.The_Type;
    end;
    --
-   procedure gtk_new(self : in out bbs_altimeter) is
+   procedure gtk_new(self : in out bbs_compass) is
    begin
-      self := new bbs_altimeter_record;
+      self := new bbs_compass_record;
       initialize(self);
    end;
    --
-   procedure initialize(self : not null access bbs_altimeter_record'class) is
+   procedure initialize(self : not null access bbs_compass_record'class) is
    begin
       Glib.Object.G_New(Object => self,
                         Typ    => Get_Type);
       Gtk.Drawing_Area.Initialize(self);
-      self.On_Draw(draw_altimeter'access, True);
+      self.On_Draw(draw_compass'access, True);
    end;
    --
    -- Attach the window and request the size as well as setting reasonable
    -- defaults for most values.
    --
-   procedure setup(self : not null access bbs_altimeter_record'class;
+   procedure setup(self : not null access bbs_compass_record'class;
                   width : Integer; parent : Gdk.Gdk_Window) is
    begin
       self.value := 0.0;
       self.pointer := 0.0;
       self.radius := Float(width - 50)/2.0;
       self.size := width;
-      self.setting := 29.92;
       self.slew := false;
       self.failed := False;
       Glib.Properties.Set_Property(self, Gtk.Widget.Height_Request_Property, Glib.Gint(self.size));
@@ -44,7 +43,7 @@ package body bbs.widget.altimeter is
       self.Set_Has_Window(True);
    end;
    --
-   procedure set_value(self : in out bbs_altimeter_record'Class; value : Float) is
+   procedure set_value(self : in out bbs_compass_record'Class; value : Float) is
    begin
       self.value := value;
       if (not self.slew) then
@@ -53,19 +52,13 @@ package body bbs.widget.altimeter is
       end if;
    end;
 
-   procedure set_failed(self : in out bbs_altimeter_record'Class; value : Boolean) is
+   procedure set_failed(self : in out bbs_compass_record'Class; value : Boolean) is
    begin
       self.failed := value;
       self.Queue_Draw;
    end;
    --
-   procedure altimeter_setting(self : in out bbs_altimeter_record'Class; value : Float) is
-   begin
-      self.setting := value;
-      self.Queue_Draw;
-   end;
-   --
-   procedure set_slew(self : in out bbs_altimeter_record'Class; value : Boolean; rate : Float) is
+   procedure set_slew(self : in out bbs_compass_record'Class; value : Boolean; rate : Float) is
    begin
       self.slew_rate := rate;
       self.slew := value;
@@ -79,7 +72,7 @@ package body bbs.widget.altimeter is
 
    function slew_handler(Self : not null access Gtk.Widget.Gtk_Widget_Record'Class;
                          Frame_Clock : not null access Gdk.Frame_Clock.Gdk_Frame_Clock_Record'Class) return Boolean is
-      me : constant bbs_altimeter := bbs_altimeter(self);
+      me : constant bbs_compass := bbs_compass(self);
    begin
       if (me.pointer /= me.value) then
          if (me.pointer < me.value) then
@@ -100,8 +93,8 @@ package body bbs.widget.altimeter is
       return True;
    end;
 
-   function draw_altimeter(Self : access Gtk.Widget.Gtk_Widget_Record'Class; context : Cairo.Cairo_Context) return boolean is
-      me : constant bbs_altimeter := bbs_altimeter(self);
+   function draw_compass(Self : access Gtk.Widget.Gtk_Widget_Record'Class; context : Cairo.Cairo_Context) return boolean is
+      me : constant bbs_compass := bbs_compass(self);
       matrix : aliased Cairo.Cairo_Matrix;
    begin
       if (me.failed) then
@@ -117,15 +110,18 @@ package body bbs.widget.altimeter is
       end if;
       return True;
    end;
-
-   procedure draw_background(Self : access bbs_altimeter_record'Class; context : Cairo.Cairo_Context) is
+   --
+   -- The compass is a little different than other dial display widgets in that
+   -- the background moves while the foreground is fixed.
+   --
+   procedure draw_background(Self : access bbs_compass_record'Class; context : Cairo.Cairo_Context) is
       matrix : aliased Cairo.Cairo_Matrix;
       font_mat : aliased Cairo.Cairo_Matrix;
       ticks : Integer;
    begin
       Cairo.Set_Source_Rgb(context, 0.0, 0.0, 0.0);
       Cairo.Paint(context);
-      Cairo.Rotate(context, Glib.Gdouble(Ada.Numerics.Pi));
+      Cairo.Rotate(context, Glib.Gdouble(Ada.Numerics.Pi - self.pointer*Ada.Numerics.Pi/180.0));
       Cairo.Get_Matrix(context, matrix'Access);
       Cairo.Get_Font_Matrix(context, font_mat'Access);
       --
@@ -138,7 +134,7 @@ package body bbs.widget.altimeter is
       --
       -- First draw the major ticks
       --
-      ticks := 10;
+      ticks := 36;
       Cairo.Set_Line_Width(context, 2.0);
       Cairo.Set_Font_Size(context, 12.0);
       for x in 0 .. (ticks - 1) loop
@@ -146,14 +142,12 @@ package body bbs.widget.altimeter is
          Cairo.Rotate(context, Glib.Gdouble(float(x)*two_pi/float(ticks)));
          Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 10.0));
          Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius + 5.0));
-         Cairo.Move_To(context, -5.0, Glib.Gdouble(self.radius + 15.0));
-         Cairo.Show_Text(context, Integer'Image(x));
       end loop;
       Cairo.Stroke(context);
       --
       -- Then draw the minor ticks
       --
-      ticks := 20;
+      ticks := 72;
       Cairo.Set_Line_Width(context, 1.0);
       for x in 0 .. (ticks - 1) loop
          Cairo.Set_Matrix(context, matrix'Access);
@@ -163,74 +157,85 @@ package body bbs.widget.altimeter is
       end loop;
       Cairo.Stroke(context);
       --
-      -- Other labels
+      -- Draw the labels
       --
-      Cairo.Set_Matrix(context, matrix'Access);
-      Cairo.Set_Font_Matrix(context, font_mat'Access);
-      Cairo.Rotate(context, Glib.Gdouble(Ada.Numerics.Pi));
-      Cairo.Set_Font_Size(context, 9.0);
-      Cairo.Move_To(context, -17.0, Glib.Gdouble(-self.radius + 15.0));
-      Cairo.Show_Text(context, "100  Feet");
-      --
-      Cairo.Set_Font_Size(context, 14.0);
-      Cairo.Move_To(context, 20.0, 7.0);
-      Cairo.Show_Text(context, Integer'Image(Integer(self.setting*100.0)));
+      ticks := 12;
+      Cairo.Set_Font_Size(context, 12.0);
+      for x in 0 .. (ticks - 1) loop
+         Cairo.Set_Matrix(context, matrix'Access);
+         Cairo.Rotate(context, Glib.Gdouble(float(x)*two_pi/float(ticks)));
+         Cairo.Move_To(context, -5.0, Glib.Gdouble(self.radius + 15.0));
+         case x is
+            when 0 =>
+              Cairo.Show_Text(context, "N");
+            when 3 =>
+               Cairo.Show_Text(context, "E");
+            when 6 =>
+               Cairo.Show_Text(context, "S");
+            when 9 =>
+               Cairo.Show_Text(context, "W");
+            when others =>
+              Cairo.Show_Text(context, Integer'Image(x*3));
+         end case;
+      end loop;
    end;
    --
-   -- The altimeter actually has three pointers.  The large pointer gives the
+   -- The compass actually has three pointers.  The large pointer gives the
    -- altitude mod 100 feet, the small pointer gives the altitude mod 1000 feet,
    -- and the triangle gives the altitude mod 10000 feet.
    --
-   procedure draw_pointers(Self : access bbs_altimeter_record'Class; context : Cairo.Cairo_Context) is
+   procedure draw_pointers(Self : access bbs_compass_record'Class; context : Cairo.Cairo_Context) is
       matrix : aliased Cairo.Cairo_Matrix;
-      triangle : constant float := self.pointer;
-      small : constant float := float(integer(self.pointer) mod 10000);
-      big : constant float := float(integer(self.pointer) mod 1000);
    begin
       Cairo.Rotate(context, Glib.Gdouble(Ada.Numerics.Pi));
       Cairo.Set_Line_Width(context, 2.0);
       Cairo.Get_Matrix(context, matrix'Access);
       --
-      -- Draw triangle
-      --
-      Cairo.Get_Matrix(context, matrix'Access);
-      Cairo.Rotate(context, Glib.Gdouble(triangle*two_pi/100000.0));
-      Cairo.Set_Source_Rgb(context, 0.5, 0.5, 0.5);
-      Cairo.Move_To(context, -10.0, 20.0);
-      Cairo.Line_To(context, 0.0, 30.0);
-      Cairo.Line_To(context, 10.0, 20.0);
-      Cairo.Line_To(context, -10.0, 20.0);
-      Cairo.Fill(context);
-      --
-      -- Draw small pointer
-      --
-      Cairo.Set_Matrix(context, matrix'Access);
-      Cairo.Rotate(context, Glib.Gdouble(small*two_pi/10000.0));
-      Cairo.Set_Source_Rgb(context, 0.7, 0.7, 0.7);
-      Cairo.Move_To(context, 0.0, -10.0);
-      Cairo.Line_To(context, 5.0, 0.0);
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius - 30.0));
-      Cairo.Line_To(context, -5.0, 0.0);
-      Cairo.Line_To(context, 0.0, -10.0);
-      Cairo.Fill(context);
-      --
       -- Draw large pointer
       --
       Cairo.Set_Matrix(context, matrix'Access);
-      Cairo.Rotate(context, Glib.Gdouble(big*two_pi/1000.0));
+      Cairo.Rotate(context, Glib.Gdouble(two_pi/1000.0));
       Cairo.Set_Source_Rgb(context, 0.9, 0.9, 0.9);
-      Cairo.Move_To(context, 0.0, -10.0);
-      Cairo.Line_To(context, 5.0, 0.0);
+      Cairo.Move_To(context, 5.0, Glib.Gdouble(self.radius - 50.0));
       Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius - 10.0));
-      Cairo.Line_To(context, -5.0, 0.0);
-      Cairo.Line_To(context, 0.0, -10.0);
+      Cairo.Line_To(context, -5.0, Glib.Gdouble(self.radius - 50.0));
+      Cairo.Line_To(context, 5.0, Glib.Gdouble(self.radius - 50.0));
       Cairo.Fill(context);
+      --
+      Cairo.Move_To(context, 0.0, 70.0);
+      Cairo.Line_To(context, 5.0, 10.0);
+      Cairo.Line_To(context, 60.0, 5.0);
+      Cairo.Line_To(context, 60.0, -5.0);
+      Cairo.Line_To(context, 5.0, -5.0);
+      Cairo.Line_To(context, 5.0, -60.0);
+      Cairo.Line_To(context, 30.0, -65.0);
+      Cairo.Line_To(context, 30.0, -70.0);
+      Cairo.Line_To(context, -30.0, -70.0);
+      Cairo.Line_To(context, -30.0, -65.0);
+      Cairo.Line_To(context, -5.0, -60.0);
+      Cairo.Line_To(context, -5.0, -5.0);
+      Cairo.Line_To(context, -60.0, -5.0);
+      Cairo.Line_To(context, -60.0, 5.0);
+      Cairo.Line_To(context, -5.0, 10.0);
+      Cairo.Line_To(context, 0.0, 70.0);
+      Cairo.Fill(context);
+      --
+      Cairo.Set_Line_Width(context, 1.0);
+      Cairo.Move_To(context, 0.0, -Glib.Gdouble(self.radius - 50.0));
+      Cairo.Line_To(context, 0.0, -Glib.Gdouble(self.radius - 10.0));
+      --
+      Cairo.Move_To(context, Glib.Gdouble(self.radius - 50.0), 0.0);
+      Cairo.Line_To(context, Glib.Gdouble(self.radius - 15.0), 0.0);
+      --
+      Cairo.Move_To(context, -Glib.Gdouble(self.radius - 50.0), 0.0);
+      Cairo.Line_To(context, -Glib.Gdouble(self.radius - 15.0), 0.0);
+      Cairo.Stroke(context);
    end;
    --
    -- This function draws a red X on the widget area.  It is used when data for
    -- the widget is failed.
    --
-   procedure draw_failed(Self : access bbs_altimeter_record'Class; context : Cairo.Cairo_Context) is
+   procedure draw_failed(Self : access bbs_compass_record'Class; context : Cairo.Cairo_Context) is
    begin
       Cairo.Set_Line_Width(context, 5.0);
       Cairo.Set_Source_Rgb(context, 1.0, 0.0, 0.0);
@@ -241,7 +246,7 @@ package body bbs.widget.altimeter is
       Cairo.Stroke(context);
    end;
 
---   function compute_angle(Self : access bbs_altimeter_record'Class; value : Float) return Float is
+--   function compute_angle(Self : access bbs_compass_record'Class; value : Float) return Float is
 --   begin
 --      return 3.0*Ada.Numerics.Pi/2.0 + value*two_pi/(self.max - self.min);
 --   end;

@@ -1,3 +1,12 @@
+--
+--   author: Brent Seidel
+--   date: 15-Mar-2016
+--
+-- This is a simple altimeter similar to the ones found in light aircraft.  It
+-- displays the altitude using three pointers and also has a display for the
+-- altimeter setting.  Note that this is a display only widget - changing the
+-- altimeter setting does not change the altitude displayed.
+--
 with Ada.Text_IO;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Numerics;
@@ -18,15 +27,6 @@ with Glib.Object;
 with Glib.Properties;
 with Cairo;
 package bbs.widget.altimeter is
-
---   author : constant String := "Brent Seidel";
---   version : constant String := "V00.01";
---   date : constant String := "15-Mar-2016";
-
-   --
-   -- Define a widget for an altimeter.  The altimeter has a number of options and not all
-   -- combinations of options make sense.  In some cases unsexpected behaviour
-   -- may occur.
    --
    type bbs_altimeter_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
    type bbs_altimeter is access all bbs_altimeter_record'class;
@@ -40,8 +40,12 @@ package bbs.widget.altimeter is
    function  Get_Type return Glib.GType;
    procedure gtk_new(self : in out bbs_altimeter);
    procedure initialize(self : not null access bbs_altimeter_record'class);
+   --
+   -- Width is the width of the widget in pixels.  The widget is square so that
+   -- only the width needs to be specified.
+   --
    procedure setup(self : not null access bbs_altimeter_record'class;
-                   radius : Float; parent : Gdk.Gdk_Window);
+                   width : Integer; parent : Gdk.Gdk_Window);
    --
    -- Options
    --

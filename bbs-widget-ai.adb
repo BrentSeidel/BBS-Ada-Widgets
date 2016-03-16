@@ -29,10 +29,10 @@ package body bbs.widget.ai is
    -- defaults for most values.
    --
    procedure setup(self : not null access bbs_ai_record'class;
-                  radius : Float; parent : Gdk.Gdk_Window) is
+                  width : Integer; parent : Gdk.Gdk_Window) is
    begin
-      self.radius := radius;
-      self.size := Integer(self.radius*2.0 + 50.0);
+      self.radius := Float(width - 50)/2.0;
+      self.size := width;
       self.slew := false;
       self.failed := False;
       self.pitch := 0.0;

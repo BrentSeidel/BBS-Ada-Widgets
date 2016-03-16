@@ -1,3 +1,10 @@
+--
+--   author Brent Seidel
+--   date 2-Feb-2016
+--
+-- This is a simple attitude indicator widget.  It provides an indication of
+-- pitch and roll similar to attitude indicators found in airplanes.
+--
 with Ada.Text_IO;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Numerics;
@@ -18,14 +25,6 @@ with Glib.Object;
 with Glib.Properties;
 with Cairo;
 package bbs.widget.ai is
-
-   author : constant String := "Brent Seidel";
-   version : constant String := "V00.01";
-   date : constant String := "2-Feb-2016";
-
-   --
-   -- Define a widget for a attitude indicator.  This is an instrument for
-   -- showing the pitch and roll of an aircraft.
    --
    type bbs_ai_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
    type bbs_ai is access all bbs_ai_record'class;
@@ -39,8 +38,13 @@ package bbs.widget.ai is
    function  Get_Type return Glib.GType;
    procedure gtk_new(self : in out bbs_ai);
    procedure initialize(self : not null access bbs_ai_record'class);
+   --
+   -- Width is the width of the widget in pixels.  The widget is square so that
+   -- only the width needs to be specified.  (this may change in the future to
+   -- allow for a rectangular widget).
+   --
    procedure setup(self : not null access bbs_ai_record'class;
-                   radius : Float; parent : Gdk.Gdk_Window);
+                   width : Integer; parent : Gdk.Gdk_Window);
    --
    -- Options
    --
