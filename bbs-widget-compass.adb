@@ -191,44 +191,50 @@ package body bbs.widget.compass is
       Cairo.Set_Line_Width(context, 2.0);
       Cairo.Get_Matrix(context, matrix'Access);
       --
-      -- Draw large pointer
+      -- Draw triangle
       --
       Cairo.Set_Matrix(context, matrix'Access);
       Cairo.Rotate(context, Glib.Gdouble(two_pi/1000.0));
+      Cairo.Scale(context, Glib.Gdouble(float(self.size) / 300.0),
+                  Glib.Gdouble(float(self.size) / 300.0));
       Cairo.Set_Source_Rgb(context, 0.9, 0.9, 0.9);
-      Cairo.Move_To(context, 5.0, Glib.Gdouble(self.radius - 50.0));
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius - 10.0));
-      Cairo.Line_To(context, -5.0, Glib.Gdouble(self.radius - 50.0));
-      Cairo.Line_To(context, 5.0, Glib.Gdouble(self.radius - 50.0));
+      Cairo.Move_To(context, 5.0, 75.0);
+      Cairo.Line_To(context, 0.0, 115.0);
+      Cairo.Line_To(context, -5.0, 75.0);
+      Cairo.Line_To(context, 5.0, 75.0);
       Cairo.Fill(context);
+      --
+      -- Draw airplane symbol
       --
       Cairo.Move_To(context, 0.0, 70.0);
       Cairo.Line_To(context, 5.0, 10.0);
-      Cairo.Line_To(context, 60.0, 5.0);
-      Cairo.Line_To(context, 60.0, -5.0);
+      Cairo.Line_To(context, 55.0, 5.0);
+      Cairo.Line_To(context, 55.0, -5.0);
       Cairo.Line_To(context, 5.0, -5.0);
-      Cairo.Line_To(context, 5.0, -60.0);
+      Cairo.Line_To(context, 5.0, -55.0);
       Cairo.Line_To(context, 30.0, -65.0);
       Cairo.Line_To(context, 30.0, -70.0);
       Cairo.Line_To(context, -30.0, -70.0);
       Cairo.Line_To(context, -30.0, -65.0);
-      Cairo.Line_To(context, -5.0, -60.0);
+      Cairo.Line_To(context, -5.0, -55.0);
       Cairo.Line_To(context, -5.0, -5.0);
-      Cairo.Line_To(context, -60.0, -5.0);
-      Cairo.Line_To(context, -60.0, 5.0);
+      Cairo.Line_To(context, -55.0, -5.0);
+      Cairo.Line_To(context, -55.0, 5.0);
       Cairo.Line_To(context, -5.0, 10.0);
       Cairo.Line_To(context, 0.0, 70.0);
       Cairo.Fill(context);
       --
+      -- Draw other lines
+      --
       Cairo.Set_Line_Width(context, 1.0);
-      Cairo.Move_To(context, 0.0, -Glib.Gdouble(self.radius - 50.0));
-      Cairo.Line_To(context, 0.0, -Glib.Gdouble(self.radius - 10.0));
+      Cairo.Move_To(context, 0.0, -75.0);
+      Cairo.Line_To(context, 0.0, -115.0);
       --
-      Cairo.Move_To(context, Glib.Gdouble(self.radius - 50.0), 0.0);
-      Cairo.Line_To(context, Glib.Gdouble(self.radius - 15.0), 0.0);
+      Cairo.Move_To(context, 70.0, 0.0);
+      Cairo.Line_To(context, 115.0, 0.0);
       --
-      Cairo.Move_To(context, -Glib.Gdouble(self.radius - 50.0), 0.0);
-      Cairo.Line_To(context, -Glib.Gdouble(self.radius - 15.0), 0.0);
+      Cairo.Move_To(context, -70.0, 0.0);
+      Cairo.Line_To(context, -115.0, 0.0);
       Cairo.Stroke(context);
    end;
    --
