@@ -33,10 +33,12 @@ package body bbs.widget.compass is
    begin
       self.value := 0.0;
       self.pointer := 0.0;
+      self.bug := 0.0;
       self.radius := Float(width - 50)/2.0;
       self.size := width;
       self.slew := false;
       self.failed := False;
+      self.bug_state := False;
       Glib.Properties.Set_Property(self, Gtk.Widget.Height_Request_Property, Glib.Gint(self.size));
       Glib.Properties.Set_Property(self, Gtk.Widget.Width_Request_Property, Glib.Gint(self.size));
       self.Set_Window(parent);
@@ -69,7 +71,14 @@ package body bbs.widget.compass is
          self.pointer := self.value;
       end if;
    end;
-
+   --
+   procedure set_bug(self : in out bbs_compass_record'Class; state : Boolean; value : Float) is
+   begin
+      self.bug := value;
+      self.bug_state := state;
+      self.Queue_Draw;
+   end;
+   --
    function slew_handler(Self : not null access Gtk.Widget.Gtk_Widget_Record'Class;
                          Frame_Clock : not null access Gdk.Frame_Clock.Gdk_Frame_Clock_Record'Class) return Boolean is
       me : constant bbs_compass := bbs_compass(self);
@@ -135,8 +144,8 @@ package body bbs.widget.compass is
       -- First draw the major ticks
       --
       ticks := 36;
+      Cairo.Set_Source_Rgb(context, 1.0, 1.0, 1.0);
       Cairo.Set_Line_Width(context, 2.0);
-      Cairo.Set_Font_Size(context, 12.0);
       for x in 0 .. (ticks - 1) loop
          Cairo.Set_Matrix(context, matrix'Access);
          Cairo.Rotate(context, Glib.Gdouble(float(x)*two_pi/float(ticks)));
@@ -148,6 +157,7 @@ package body bbs.widget.compass is
       -- Then draw the minor ticks
       --
       ticks := 72;
+      Cairo.Set_Source_Rgb(context, 0.9, 0.9, 0.9);
       Cairo.Set_Line_Width(context, 1.0);
       for x in 0 .. (ticks - 1) loop
          Cairo.Set_Matrix(context, matrix'Access);
@@ -157,10 +167,25 @@ package body bbs.widget.compass is
       end loop;
       Cairo.Stroke(context);
       --
+      -- Draw the heading bug, if needed
+      --
+      if (self.bug_state) then
+         Cairo.Set_Source_Rgb(context, 0.5, 0.5, 0.5);
+         Cairo.Set_Line_Width(context, 1.0);
+         Cairo.Set_Matrix(context, matrix'Access);
+         Cairo.Rotate(context, Glib.Gdouble(self.bug*Ada.Numerics.Pi/180.0));
+         Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius));
+         Cairo.Line_To(context, -10.0, Glib.Gdouble(self.radius + 15.0));
+         Cairo.Line_To(context, 10.0, Glib.Gdouble(self.radius + 15.0));
+         Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
+         Cairo.Fill(context);
+      end if;
+      --
       -- Draw the labels
       --
       ticks := 12;
       Cairo.Set_Font_Size(context, 12.0);
+      Cairo.Set_Source_Rgb(context, 1.0, 1.0, 1.0);
       for x in 0 .. (ticks - 1) loop
          Cairo.Set_Matrix(context, matrix'Access);
          Cairo.Rotate(context, Glib.Gdouble(float(x)*two_pi/float(ticks)));

@@ -63,6 +63,11 @@ package bbs.widget.compass is
    -- callbacks.
    --
    procedure set_slew(self : in out bbs_compass_record'Class; value : Boolean; rate : Float);
+   --
+   -- Sets a compass bug.  If state is true, the bug is shown.  If state is false,
+   -- the bug is not shown and the value is ignored.
+   --
+   procedure set_bug(self : in out bbs_compass_record'Class; state : Boolean; value : Float);
 
 private
    type bbs_compass_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with
@@ -72,6 +77,8 @@ private
          value : Float;
          slew_rate : Float;
          pointer : Float;
+         bug : Float;
+         bug_state : Boolean;
          failed : Boolean;
          slew : Boolean;
          callback_id : Glib.Guint;
