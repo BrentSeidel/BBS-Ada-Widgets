@@ -15,6 +15,21 @@ The dial widget has a number of options for setting the type of dial.
 * Does the dial indication jump to a new value or does it slew.
 Note that these options were added in an ad hoc fashion based on what I was interested in.
 
+###Flight Instrument Widgets
+A set of widgets is being developed that emulate the basic flight instruments.  As
+these are under development, they should be considered to be experimental and
+subject to change.
+
+The current set is:
+* Attitude Indicator
+* Altimeter
+* Compass
+* Turn Coordinator (under development)
+
+Instruments to do:
+* Airspeed
+* Vertical Speed
+
 ##Usage
 This software is licensed with GPL v3.  If you want to use this software under a different
 license, contact me and we may be able to work something out.
