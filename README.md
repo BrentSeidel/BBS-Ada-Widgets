@@ -24,11 +24,11 @@ The current set is:
 * Attitude Indicator
 * Altimeter
 * Compass
-* Turn Coordinator (under development)
+* Turn Coordinator
+* Vertical Speed
 
 Instruments to do:
 * Airspeed
-* Vertical Speed
 
 ##Usage
 This software is licensed with GPL v3.  If you want to use this software under a different

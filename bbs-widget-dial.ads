@@ -1,3 +1,8 @@
+--
+--   author:  Brent Seidel
+--   version: V00.01
+--   date:    23-Mar-2016
+--
 with Ada.Text_IO;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Numerics;
@@ -18,11 +23,6 @@ with Glib.Object;
 with Glib.Properties;
 with Cairo;
 package bbs.widget.dial is
-
-   author : constant String := "Brent Seidel";
-   version : constant String := "V00.01";
-   date : constant String := "2-Feb-2016";
-
    --
    -- Define a widget for a dial.  The dial has a number of options and not all
    -- combinations of options make sense.  In some cases unsexpected behaviour
@@ -125,8 +125,6 @@ private
       end record;
 
    two_pi : constant Float := 2.0*Ada.Numerics.Pi;
---   radius : constant Float := 75.0;
---   size : constant Integer := 200;
 
    klass : aliased Glib.Object.Ada_GObject_Class := Glib.Object.Uninitialized_Class;
 
