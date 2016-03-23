@@ -128,7 +128,7 @@ package body bbs.widget.compass is
       font_mat : aliased Cairo.Cairo_Matrix;
       ticks : Integer;
    begin
-      Cairo.Set_Source_Rgb(context, 0.0, 0.0, 0.0);
+      set_color(context, color_black);
       Cairo.Paint(context);
       Cairo.Rotate(context, Glib.Gdouble(Ada.Numerics.Pi - self.pointer*Ada.Numerics.Pi/180.0));
       Cairo.Get_Matrix(context, matrix'Access);
@@ -137,14 +137,14 @@ package body bbs.widget.compass is
       -- Draw circle
       --
       Cairo.Set_Line_Width(context, 4.0);
-      Cairo.Set_Source_Rgb(context, 1.0, 1.0, 1.0);
+      set_color(context, color_white);
       Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius), 0.0, Glib.Gdouble(two_pi));
       Cairo.Stroke(context);
       --
       -- First draw the major ticks
       --
       ticks := 36;
-      Cairo.Set_Source_Rgb(context, 1.0, 1.0, 1.0);
+      set_color(context, color_white);
       Cairo.Set_Line_Width(context, 2.0);
       for x in 0 .. (ticks - 1) loop
          Cairo.Set_Matrix(context, matrix'Access);
@@ -157,7 +157,7 @@ package body bbs.widget.compass is
       -- Then draw the minor ticks
       --
       ticks := 72;
-      Cairo.Set_Source_Rgb(context, 0.9, 0.9, 0.9);
+      set_color(context, color_grey9);
       Cairo.Set_Line_Width(context, 1.0);
       for x in 0 .. (ticks - 1) loop
          Cairo.Set_Matrix(context, matrix'Access);
@@ -170,7 +170,7 @@ package body bbs.widget.compass is
       -- Draw the heading bug, if needed
       --
       if (self.bug_state) then
-         Cairo.Set_Source_Rgb(context, 0.5, 0.5, 0.5);
+         set_color(context, color_grey5);
          Cairo.Set_Line_Width(context, 1.0);
          Cairo.Set_Matrix(context, matrix'Access);
          Cairo.Rotate(context, Glib.Gdouble(self.bug*Ada.Numerics.Pi/180.0));
@@ -185,22 +185,21 @@ package body bbs.widget.compass is
       --
       ticks := 12;
       Cairo.Set_Font_Size(context, 12.0);
-      Cairo.Set_Source_Rgb(context, 1.0, 1.0, 1.0);
+      set_color(context, color_white);
       for x in 0 .. (ticks - 1) loop
          Cairo.Set_Matrix(context, matrix'Access);
          Cairo.Rotate(context, Glib.Gdouble(float(x)*two_pi/float(ticks)));
-         Cairo.Move_To(context, -5.0, Glib.Gdouble(self.radius + 15.0));
          case x is
             when 0 =>
-              Cairo.Show_Text(context, "N");
+               center_text(context, self.radius + 15.0, "N");
             when 3 =>
-               Cairo.Show_Text(context, "E");
+               center_text(context, self.radius + 15.0, "E");
             when 6 =>
-               Cairo.Show_Text(context, "S");
+               center_text(context, self.radius + 15.0, "S");
             when 9 =>
-               Cairo.Show_Text(context, "W");
+               center_text(context, self.radius + 15.0, "W");
             when others =>
-              Cairo.Show_Text(context, Integer'Image(x*3));
+               center_text(context, self.radius + 15.0, Integer'Image(x*3));
          end case;
       end loop;
    end;
@@ -222,7 +221,7 @@ package body bbs.widget.compass is
       Cairo.Rotate(context, Glib.Gdouble(two_pi/1000.0));
       Cairo.Scale(context, Glib.Gdouble(float(self.size) / 300.0),
                   Glib.Gdouble(float(self.size) / 300.0));
-      Cairo.Set_Source_Rgb(context, 0.9, 0.9, 0.9);
+      set_color(context, color_grey9);
       Cairo.Move_To(context, 5.0, 75.0);
       Cairo.Line_To(context, 0.0, 115.0);
       Cairo.Line_To(context, -5.0, 75.0);
@@ -269,17 +268,12 @@ package body bbs.widget.compass is
    procedure draw_failed(Self : access bbs_compass_record'Class; context : Cairo.Cairo_Context) is
    begin
       Cairo.Set_Line_Width(context, 5.0);
-      Cairo.Set_Source_Rgb(context, 1.0, 0.0, 0.0);
+      set_color(context, color_white);
       Cairo.Move_To(context, 0.0, 0.0);
       Cairo.Line_To(context, Glib.Gdouble(Float(self.size)), Glib.Gdouble(Float(self.size)));
       Cairo.Move_To(context, 0.0, Glib.Gdouble(Float(self.size)));
       Cairo.Line_To(context, Glib.Gdouble(Float(self.size)), 0.0);
       Cairo.Stroke(context);
    end;
-
---   function compute_angle(Self : access bbs_compass_record'Class; value : Float) return Float is
---   begin
---      return 3.0*Ada.Numerics.Pi/2.0 + value*two_pi/(self.max - self.min);
---   end;
 
 end;

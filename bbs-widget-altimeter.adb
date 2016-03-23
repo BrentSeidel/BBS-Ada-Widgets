@@ -123,7 +123,7 @@ package body bbs.widget.altimeter is
       font_mat : aliased Cairo.Cairo_Matrix;
       ticks : Integer;
    begin
-      Cairo.Set_Source_Rgb(context, 0.0, 0.0, 0.0);
+      set_color(context, color_black);
       Cairo.Paint(context);
       Cairo.Rotate(context, Glib.Gdouble(Ada.Numerics.Pi));
       Cairo.Get_Matrix(context, matrix'Access);
@@ -132,7 +132,7 @@ package body bbs.widget.altimeter is
       -- Draw circle
       --
       Cairo.Set_Line_Width(context, 4.0);
-      Cairo.Set_Source_Rgb(context, 1.0, 1.0, 1.0);
+      set_color(context, color_white);
       Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius), 0.0, Glib.Gdouble(two_pi));
       Cairo.Stroke(context);
       --
@@ -146,8 +146,7 @@ package body bbs.widget.altimeter is
          Cairo.Rotate(context, Glib.Gdouble(float(x)*two_pi/float(ticks)));
          Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 10.0));
          Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius + 5.0));
-         Cairo.Move_To(context, -5.0, Glib.Gdouble(self.radius + 15.0));
-         Cairo.Show_Text(context, Integer'Image(x));
+         center_text(context, self.radius + 15.0, Integer'Image(x));
       end loop;
       Cairo.Stroke(context);
       --
@@ -169,8 +168,7 @@ package body bbs.widget.altimeter is
       Cairo.Set_Font_Matrix(context, font_mat'Access);
       Cairo.Rotate(context, Glib.Gdouble(Ada.Numerics.Pi));
       Cairo.Set_Font_Size(context, 9.0);
-      Cairo.Move_To(context, -17.0, Glib.Gdouble(-self.radius + 15.0));
-      Cairo.Show_Text(context, "100  Feet");
+      center_text(context, -self.radius + 20.0, "100  Feet");
       --
       Cairo.Set_Font_Size(context, 14.0);
       Cairo.Move_To(context, 20.0, 7.0);
@@ -195,7 +193,7 @@ package body bbs.widget.altimeter is
       --
       Cairo.Get_Matrix(context, matrix'Access);
       Cairo.Rotate(context, Glib.Gdouble(triangle*two_pi/100000.0));
-      Cairo.Set_Source_Rgb(context, 0.5, 0.5, 0.5);
+      set_color(context, color_grey5);
       Cairo.Move_To(context, -10.0, 20.0);
       Cairo.Line_To(context, 0.0, 30.0);
       Cairo.Line_To(context, 10.0, 20.0);
@@ -206,7 +204,7 @@ package body bbs.widget.altimeter is
       --
       Cairo.Set_Matrix(context, matrix'Access);
       Cairo.Rotate(context, Glib.Gdouble(small*two_pi/10000.0));
-      Cairo.Set_Source_Rgb(context, 0.7, 0.7, 0.7);
+      set_color(context, color_grey7);
       Cairo.Move_To(context, 0.0, -10.0);
       Cairo.Line_To(context, 5.0, 0.0);
       Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius - 30.0));
@@ -218,7 +216,7 @@ package body bbs.widget.altimeter is
       --
       Cairo.Set_Matrix(context, matrix'Access);
       Cairo.Rotate(context, Glib.Gdouble(big*two_pi/1000.0));
-      Cairo.Set_Source_Rgb(context, 0.9, 0.9, 0.9);
+      set_color(context, color_grey9);
       Cairo.Move_To(context, 0.0, -10.0);
       Cairo.Line_To(context, 5.0, 0.0);
       Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius - 10.0));
@@ -233,17 +231,12 @@ package body bbs.widget.altimeter is
    procedure draw_failed(Self : access bbs_altimeter_record'Class; context : Cairo.Cairo_Context) is
    begin
       Cairo.Set_Line_Width(context, 5.0);
-      Cairo.Set_Source_Rgb(context, 1.0, 0.0, 0.0);
+      set_color(context, color_fail);
       Cairo.Move_To(context, 0.0, 0.0);
       Cairo.Line_To(context, Glib.Gdouble(Float(self.size)), Glib.Gdouble(Float(self.size)));
       Cairo.Move_To(context, 0.0, Glib.Gdouble(Float(self.size)));
       Cairo.Line_To(context, Glib.Gdouble(Float(self.size)), 0.0);
       Cairo.Stroke(context);
    end;
-
---   function compute_angle(Self : access bbs_altimeter_record'Class; value : Float) return Float is
---   begin
---      return 3.0*Ada.Numerics.Pi/2.0 + value*two_pi/(self.max - self.min);
---   end;
 
 end;

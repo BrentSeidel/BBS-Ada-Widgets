@@ -138,13 +138,8 @@ package body bbs.widget.turn is
    procedure draw_background(Self : access bbs_turn_record'Class; context : Cairo.Cairo_Context) is
       matrix : aliased Cairo.Cairo_Matrix;
       font_mat : aliased Cairo.Cairo_Matrix;
-      ex : aliased Cairo.Cairo_Text_Extents;
-      text1 : constant String := "TURN COORDINATOR";
-      text2 : constant String := "NO PITCH";
-      text3 : constant String := "INFORMATION";
-      text4 : constant String := "2 MIN";
    begin
-      Cairo.Set_Source_Rgb(context, 0.0, 0.0, 0.0);
+      set_color(context, color_black);
       Cairo.Paint(context);
       Cairo.Rotate(context, Glib.Gdouble(Ada.Numerics.Pi));
       Cairo.Get_Matrix(context, matrix'Access);
@@ -152,13 +147,13 @@ package body bbs.widget.turn is
       --
       -- Draw circle
       --
-      Cairo.Set_Source_Rgb(context, 0.1, 0.1, 0.1);
+      set_color(context, color_grey1);
       Cairo.Arc(context, 0.0, 0.0, 103.0, 0.0, Glib.Gdouble(two_pi));
       Cairo.Fill(context);
       --
       -- First draw the major ticks
       --
-      Cairo.Set_Source_Rgb(context, 1.0, 1.0, 1.0);
+      set_color(context, color_white);
       Cairo.Set_Line_Width(context, 4.0);
       Cairo.Set_Matrix(context, matrix'Access);
       Cairo.Move_To(context, 105.0, 0.0);
@@ -176,25 +171,17 @@ package body bbs.widget.turn is
       --
       -- Other labels
       --
-      Cairo.Set_Source_Rgb(context, 0.9, 0.9, 0.9);
+      set_color(context, color_grey9);
       Cairo.Set_Matrix(context, matrix'Access);
       Cairo.Set_Font_Matrix(context, font_mat'Access);
       Cairo.Rotate(context, Glib.Gdouble(Ada.Numerics.Pi));
       Cairo.Set_Font_Size(context, 9.0);
-      Cairo.Text_Extents(context, Interfaces.C.Strings.New_String(text1), ex'Access);
-      Cairo.Move_To(context, -ex.Width/2.0, 15.0);
-      Cairo.Show_Text(context, text1);
-      Cairo.Text_Extents(context, Interfaces.C.Strings.New_String(text2), ex'Access);
-      Cairo.Move_To(context, -ex.Width/2.0, 65.0);
-      Cairo.Show_Text(context, text2);
-      Cairo.Text_Extents(context, Interfaces.C.Strings.New_String(text3), ex'Access);
-      Cairo.Move_To(context, -ex.Width/2.0, 75.0);
-      Cairo.Show_Text(context, text3);
+      center_text(context, 15.0, "TURN COORDINATOR");
+      center_text(context, 65.0, "NO PITCH");
+      center_text(context, 75.0, "INFORMATION");
       --
       Cairo.Set_Font_Size(context, 12.0);
-      Cairo.Text_Extents(context, Interfaces.C.Strings.New_String(text4), ex'Access);
-      Cairo.Move_To(context, -ex.Width/2.0, 50.0);
-      Cairo.Show_Text(context, text4);
+      center_text(context, 50.0, "2 MIN");
       Cairo.Move_To(context, -110.0, 50.0);
       Cairo.Show_Text(context, "L");
       Cairo.Move_To(context, 105.0, 50.0);
@@ -202,7 +189,7 @@ package body bbs.widget.turn is
       --
       -- Draw line for slip indicator
       --
-      Cairo.Set_Source_Rgb(context, 0.7, 0.7, 0.7);
+      set_color(context, color_grey7);
       Cairo.Set_Line_Cap(context, Cairo.Cairo_Line_Cap_Round);
       Cairo.Set_Line_Width(context, 12.0);
       Cairo.Move_To(context, -30.0, 30.0);
@@ -219,7 +206,7 @@ package body bbs.widget.turn is
       --
       -- Draw slip ball and cage
       --
-      Cairo.Set_Source_Rgb(context, 0.1, 0.1, 0.1);
+      set_color(context, color_grey1);
       Cairo.Set_Line_Width(context, 2.0);
       Cairo.Move_To(context, -7.0, -24.0);
       Cairo.Line_To(context, -7.0, -36.0);
@@ -227,7 +214,7 @@ package body bbs.widget.turn is
       Cairo.Line_To(context, 7.0, -36.0);
       Cairo.Stroke(context);
       --
-      Cairo.Set_Source_Rgb(context, 0.9, 0.9, 0.9);
+      set_color(context, color_grey9);
       Cairo.Arc(context, -Glib.Gdouble(self.slip*30.0), -30.0, 6.0, 0.0, Glib.Gdouble(two_pi));
       Cairo.Fill(context);
       --
@@ -236,7 +223,7 @@ package body bbs.widget.turn is
       Cairo.Set_Line_Width(context, 4.0);
       Cairo.Set_Matrix(context, matrix'Access);
       Cairo.Rotate(context, -Glib.Gdouble(self.pointer*5.0*Ada.Numerics.Pi/180.0));
-      Cairo.Set_Source_Rgb(context, 0.9, 0.9, 0.9);
+      set_color(context, color_grey9);
       Cairo.Move_To(context, -100.0, 0.0);
       Cairo.Line_To(context, 100.0, 0.0);
       Cairo.Move_To(context, 0.0, 0.0);
@@ -252,7 +239,7 @@ package body bbs.widget.turn is
    procedure draw_failed(Self : access bbs_turn_record'Class; context : Cairo.Cairo_Context) is
    begin
       Cairo.Set_Line_Width(context, 5.0);
-      Cairo.Set_Source_Rgb(context, 1.0, 0.0, 0.0);
+      set_color(context, color_fail);
       Cairo.Move_To(context, 0.0, 0.0);
       Cairo.Line_To(context, Glib.Gdouble(Float(self.size)), Glib.Gdouble(Float(self.size)));
       Cairo.Move_To(context, 0.0, Glib.Gdouble(Float(self.size)));

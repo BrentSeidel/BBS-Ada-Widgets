@@ -231,14 +231,14 @@ package body bbs.widget.dial is
       start := Glib.Gdouble(self.arc_start + Ada.Numerics.Pi/2.0);
       Cairo.Set_Line_Width(context, 4.0);
       if (self.low_red_present) then
-         Cairo.Set_Source_Rgb(context, 1.0, 0.0, 0.0);
+         set_color(context, color_red);
          stop := Glib.Gdouble(self.compute_angle(self.low_red - self.min));
          Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius), start, stop);
          Cairo.Stroke(context);
          start := stop;
       end if;
       if (self.low_yellow_present) then
-         Cairo.Set_Source_Rgb(context, 1.0, 1.0, 0.0);
+         set_color(context, color_yellow);
          stop := Glib.Gdouble(self.compute_angle(self.low_yellow - self.min));
          Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius), start, stop);
          Cairo.Stroke(context);
@@ -247,21 +247,21 @@ package body bbs.widget.dial is
       green_start := start;
       stop := Glib.Gdouble(self.arc_end + Ada.Numerics.Pi/2.0);
       if (self.high_red_present) then
-         Cairo.Set_Source_Rgb(context, 1.0, 0.0, 0.0);
+         set_color(context, color_red);
          start := Glib.Gdouble(self.compute_angle(self.high_red - self.min));
          Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius), start, stop);
          Cairo.Stroke(context);
          stop := start;
       end if;
       if (self.high_yellow_present) then
-         Cairo.Set_Source_Rgb(context, 1.0, 1.0, 0.0);
+         set_color(context, color_yellow);
          start := Glib.Gdouble(self.compute_angle(self.high_yellow - self.min));
          Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius), start, stop);
          Cairo.Stroke(context);
          stop := start;
       end if;
       green_stop := stop;
-      Cairo.Set_Source_Rgb(context, 0.0, 0.5, 0.0);
+      set_color(context, color_green5);
       Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius), green_start, green_stop);
       Cairo.Stroke(context);
    end;
@@ -270,7 +270,7 @@ package body bbs.widget.dial is
       matrix : aliased Cairo.Cairo_Matrix;
       ticks : Integer;
    begin
-      Cairo.Set_Source_Rgb(context, 0.0, 0.0, 0.0);
+      set_color(context, color_black);
       Cairo.Get_Matrix(context, matrix'Access);
       --
       -- First draw the major ticks
@@ -291,8 +291,8 @@ package body bbs.widget.dial is
             end if;
             Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 10.0));
             Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius + 5.0));
-            Cairo.Move_To(context, -5.0, Glib.Gdouble(self.radius + 15.0));
-            Cairo.Show_Text(context, Integer'Image(integer(self.min + float(x)*(self.max - self.min)/float(self.major))));
+            center_text(context, self.radius + 15.0,
+                        Integer'Image(integer(self.min + float(x)*(self.max - self.min)/float(self.major))));
          end loop;
          Cairo.Stroke(context);
       end if;
@@ -328,7 +328,7 @@ package body bbs.widget.dial is
       else
          Cairo.Rotate(context, Glib.Gdouble((self.pointer - self.min)*two_pi/(self.max - self.min)));
       end if;
-      Cairo.Set_Source_Rgb(context, 0.0, 0.0, 0.0);
+      set_color(context, color_black);
       Cairo.Move_To(context, 0.0, -10.0);
       Cairo.Line_To(context, 5.0, 0.0);
       Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius - 10.0));
@@ -340,19 +340,19 @@ package body bbs.widget.dial is
    procedure draw_filled(Self : access bbs_dial_record'Class; context : Cairo.Cairo_Context) is
       position : constant Float := self.pointer - self.min;
    begin
-      Cairo.Set_Source_Rgb(context, 0.0, 1.0, 0.0);
+      set_color(context, color_green);
       if ((self.low_red_present) and (position < (self.low_red - self.min))) then
-         Cairo.Set_Source_Rgb(context, 1.0, 0.0, 0.0);
+         set_color(context, color_red);
       else
          if ((self.low_yellow_present) and (position < (self.low_yellow-self.min))) then
-            Cairo.Set_Source_Rgb(context, 1.0, 1.0, 0.0);
+            set_color(context, color_yellow);
          end if;
       end if;
       if ((self.high_red_present) and (position > (self.high_red - self.min))) then
-         Cairo.Set_Source_Rgb(context, 1.0, 0.0, 0.0);
+         set_color(context, color_red);
       else
          if ((self.high_yellow_present) and (position > (self.high_yellow - self.min))) then
-            Cairo.Set_Source_Rgb(context, 1.0, 1.0, 0.0);
+            set_color(context, color_yellow);
          end if;
       end if;
       Cairo.Rotate(context, Glib.Gdouble(Ada.Numerics.Pi/2.0));
@@ -376,7 +376,7 @@ package body bbs.widget.dial is
    procedure draw_failed(Self : access bbs_dial_record'Class; context : Cairo.Cairo_Context) is
    begin
       Cairo.Set_Line_Width(context, 5.0);
-      Cairo.Set_Source_Rgb(context, 1.0, 0.0, 0.0);
+      set_color(context, color_fail);
       Cairo.Move_To(context, 0.0, 0.0);
       Cairo.Line_To(context, Glib.Gdouble(Float(self.size)), Glib.Gdouble(Float(self.size)));
       Cairo.Move_To(context, 0.0, Glib.Gdouble(Float(self.size)));
