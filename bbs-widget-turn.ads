@@ -23,6 +23,7 @@ use type Glib.Gint;
 with Glib.Object;
 with Glib.Properties;
 with Cairo;
+with Interfaces.C.Strings;
 package bbs.widget.turn is
    --
    type bbs_turn_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
