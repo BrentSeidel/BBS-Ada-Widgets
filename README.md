@@ -20,14 +20,15 @@ A set of widgets is being developed that emulate the basic flight instruments.  
 these are under development, they should be considered to be experimental and
 subject to change.
 
+NOTE: These widgets are suitable for demonstrations, mock-up, simulations, and the
+like.  They are not suitable for use as actual aircraft instruments.
+
 The current set is:
 * Attitude Indicator
 * Altimeter
 * Compass
 * Turn Coordinator
 * Vertical Speed
-
-Instruments to do:
 * Airspeed
 
 ##Usage

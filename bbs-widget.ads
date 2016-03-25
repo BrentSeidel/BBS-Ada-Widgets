@@ -52,7 +52,7 @@ private
    color_blue : constant RGB_color := (B => 1.0, others => 0.0);
    color_green : constant RGB_color := (G => 1.0, others => 0.0);
    color_green5 : constant RGB_color := (G => 0.5, others => 0.0);
-   color_yellow : constant RGB_color := (R => 1.0, B => 1.0, G => 0.0);
+   color_yellow : constant RGB_color := (R => 1.0, G => 1.0, B => 0.0);
    --
    -- Semantic colors
    --

@@ -118,7 +118,6 @@ package body bbs.widget.vs is
                      Glib.Gdouble(float(me.size) / 300.0));
          Cairo.Get_Matrix(context, matrix'Access);
          me.draw_background(context);
---         me.draw_ticks(context);
          Cairo.Set_Matrix(context, matrix'Access);
          draw_pointer(me, context);
       end if;
