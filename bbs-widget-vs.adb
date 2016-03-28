@@ -37,7 +37,6 @@ package body bbs.widget.vs is
       self.pointer := 0.0;
       self.major := 8;
       self.minor := 32;
-      self.radius := Float(width - 50)/2.0;
       self.size := width;
       self.slew := false;
       self.failed := False;
@@ -150,7 +149,7 @@ package body bbs.widget.vs is
          Cairo.Rotate(context, Glib.Gdouble(self.arc_start + float(x)*(two_pi - 0.4)/float(self.major)));
          Cairo.Move_To(context, 0.0, 110.0);
          Cairo.Line_To(context, 0.0, 125.0);
-         center_text(context, self.radius + 15.0,
+         center_text(context, 140.0,
                      Integer'Image(integer(self.min + float(x)*(self.max - self.min)/float(self.major))/100));
       end loop;
       Cairo.Stroke(context);

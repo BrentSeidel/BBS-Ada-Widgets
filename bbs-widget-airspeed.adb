@@ -37,7 +37,6 @@ package body bbs.widget.airspeed is
       self.pointer := minimum;
       self.major := integer(maximum - minimum)/10;
       self.minor := self.major*5;
-      self.radius := Float(width - 50)/2.0;
       self.size := width;
       self.slew := false;
       self.failed := False;
@@ -212,7 +211,7 @@ package body bbs.widget.airspeed is
          set_color(context, color_white);
          start := Glib.Gdouble(self.compute_angle(self.Vs0 - self.min));
          stop := Glib.Gdouble(self.compute_angle(self.Vfe - self.min));
-         Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius - 3.0), start, stop);
+         Cairo.Arc(context, 0.0, 0.0, 122.0, start, stop);
          Cairo.Stroke(context);
       end if;
       stop := Glib.Gdouble(self.arc_end + Ada.Numerics.Pi/2.0);
@@ -224,8 +223,8 @@ package body bbs.widget.airspeed is
          set_color(context, color_red);
          start := Glib.Gdouble(self.compute_angle(self.Vne - self.min));
          Cairo.Rotate(context, start - Ada.Numerics.Pi/2.0);
-         Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 10.0));
-         Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius + 10.0));
+         Cairo.Move_To(context, 0.0, 115.0);
+         Cairo.Line_To(context, 0.0, 135.0);
          Cairo.Stroke(context);
          stop := start;
          Cairo.Set_Matrix(context, matrix'Access);
@@ -236,7 +235,7 @@ package body bbs.widget.airspeed is
       if (self.Vno_present) then
          set_color(context, color_yellow);
          start := Glib.Gdouble(self.compute_angle(self.Vno - self.min));
-         Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius), start, stop);
+         Cairo.Arc(context, 0.0, 0.0, 125.0, start, stop);
          Cairo.Stroke(context);
          stop := start;
       end if;
@@ -246,7 +245,7 @@ package body bbs.widget.airspeed is
       green_start := Glib.Gdouble(self.compute_angle(self.Vs1 - self.min));
       green_stop := stop;
       set_color(context, color_green5);
-      Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius), green_start, green_stop);
+      Cairo.Arc(context, 0.0, 0.0, 125.0, green_start, green_stop);
       Cairo.Stroke(context);
       --
       -- Some text labels
@@ -273,9 +272,9 @@ package body bbs.widget.airspeed is
          for x in 0 .. ticks loop
             Cairo.Set_Matrix(context, matrix'Access);
             Cairo.Rotate(context, Glib.Gdouble(self.arc_start + float(x)*(two_pi - 1.0)/float(self.major)));
-            Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 10.0));
-            Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius + 5.0));
-            center_text(context, self.radius + 15.0,
+            Cairo.Move_To(context, 0.0, 115.0);
+            Cairo.Line_To(context, 0.0, 130.0);
+            center_text(context, 140.0,
                         Integer'Image(integer(self.min + float(x)*(self.max - self.min)/float(self.major))));
          end loop;
          Cairo.Stroke(context);
@@ -289,8 +288,8 @@ package body bbs.widget.airspeed is
          for x in 0 .. ticks loop
             Cairo.Set_Matrix(context, matrix'Access);
             Cairo.Rotate(context, Glib.Gdouble(self.arc_start + float(x)*(two_pi - 1.0)/float(self.minor)));
-            Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 5.0));
-            Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
+            Cairo.Move_To(context, 0.0, 120.0);
+            Cairo.Line_To(context, 0.0, 125.0);
          end loop;
          Cairo.Stroke(context);
       end if;
@@ -303,7 +302,7 @@ package body bbs.widget.airspeed is
       set_color(context, color_white);
       Cairo.Move_To(context, 0.0, -10.0);
       Cairo.Line_To(context, 5.0, 0.0);
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius - 10.0));
+      Cairo.Line_To(context, 0.0, 115.0);
       Cairo.Line_To(context, -5.0, 0.0);
       Cairo.Line_To(context, 0.0, -10.0);
       Cairo.Fill(context);

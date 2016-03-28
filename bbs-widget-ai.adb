@@ -31,7 +31,6 @@ package body bbs.widget.ai is
    procedure setup(self : not null access bbs_ai_record'class;
                   width : Integer; parent : Gdk.Gdk_Window) is
    begin
-      self.radius := Float(width - 50)/2.0;
       self.size := width;
       self.slew := false;
       self.failed := False;
@@ -145,14 +144,14 @@ package body bbs.widget.ai is
       --
       set_color(context, color_gnd);
       Cairo.Move_To(context, 0.0, 0.0);
-      Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius*4.0), 0.0, Glib.Gdouble(Ada.Numerics.Pi));
+      Cairo.Arc(context, 0.0, 0.0, 500.0, 0.0, Glib.Gdouble(Ada.Numerics.Pi));
       Cairo.Fill(context);
       --
       -- Draw the sky
       --
       set_color(context, color_sky);
       Cairo.Move_To(context, 0.0, 0.0);
-      Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius*4.0), Glib.Gdouble(Ada.Numerics.Pi), Glib.Gdouble(two_pi));
+      Cairo.Arc(context, 0.0, 0.0, 500.0, Glib.Gdouble(Ada.Numerics.Pi), Glib.Gdouble(two_pi));
       Cairo.Fill(context);
       --
       -- Draw a horizon line
@@ -168,8 +167,12 @@ package body bbs.widget.ai is
       Cairo.Set_Line_Width(context, 1.0);
       set_color(context, color_black);
       for x in -3 .. 3 loop
-         Cairo.Move_To(context, -10.0, Glib.Gdouble(Float(x*10)));
-         Cairo.Line_To(context, 10.0, Glib.Gdouble(Float(x*10)));
+         Cairo.Move_To(context, -10.0, Glib.Gdouble(Float(x*15)));
+         Cairo.Line_To(context, 10.0, Glib.Gdouble(Float(x*15)));
+         if (x = -2) or (x = 2) then
+            Cairo.Move_To(context, 15.9, Glib.Gdouble(Float(x*15 + 5)));
+            Cairo.Show_Text(context, Integer'Image((-x)*10));
+         end if;
       end loop;
       Cairo.Stroke(context);
    end;
@@ -184,8 +187,8 @@ package body bbs.widget.ai is
       --
       Cairo.Set_Line_Width(context, 2.0);
       set_color(context, color_white);
-      Cairo.Move_To(context, Glib.Gdouble(-(self.radius)/sqrt_2), Glib.Gdouble(-(self.radius)/sqrt_2));
-      Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius), Glib.Gdouble(5.0*Ada.Numerics.Pi/4.0),
+      Cairo.Move_To(context, Glib.Gdouble(-125.0/sqrt_2), Glib.Gdouble(-125.0/sqrt_2));
+      Cairo.Arc(context, 0.0, 0.0, 125.0, Glib.Gdouble(5.0*Ada.Numerics.Pi/4.0),
                 Glib.Gdouble(7.0*Ada.Numerics.Pi/4.0));
       Cairo.Stroke(context);
       --
@@ -194,33 +197,12 @@ package body bbs.widget.ai is
       Cairo.Get_Matrix(context, matrix'Access);
       Cairo.Set_Line_Width(context, 1.0);
       set_color(context, color_white);
-      Cairo.Rotate(context, Glib.Gdouble((-45 + 180)*Ada.Numerics.Pi/180.0));
-      Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 5.0));
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
-      Cairo.Set_Matrix(context, matrix'Access);
-      Cairo.Rotate(context, Glib.Gdouble((-30 + 180)*Ada.Numerics.Pi/180.0));
-      Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 5.0));
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
-      Cairo.Set_Matrix(context, matrix'Access);
-      Cairo.Rotate(context, Glib.Gdouble((-15 + 180)*Ada.Numerics.Pi/180.0));
-      Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 5.0));
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
-      Cairo.Set_Matrix(context, matrix'Access);
-      Cairo.Rotate(context, Glib.Gdouble((180)*Ada.Numerics.Pi/180.0));
-      Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 5.0));
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
-      Cairo.Set_Matrix(context, matrix'Access);
-      Cairo.Rotate(context, Glib.Gdouble((15 + 180)*Ada.Numerics.Pi/180.0));
-      Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 5.0));
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
-      Cairo.Set_Matrix(context, matrix'Access);
-      Cairo.Rotate(context, Glib.Gdouble((30 + 180)*Ada.Numerics.Pi/180.0));
-      Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 5.0));
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
-      Cairo.Set_Matrix(context, matrix'Access);
-      Cairo.Rotate(context, Glib.Gdouble((45 + 180)*Ada.Numerics.Pi/180.0));
-      Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 5.0));
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
+      for x in -3 .. 3 loop
+         Cairo.Rotate(context, Glib.Gdouble(Float(x*15 + 180)*Ada.Numerics.Pi/180.0));
+         Cairo.Move_To(context, 0.0, 120.0);
+         Cairo.Line_To(context, 0.0, 125.0);
+         Cairo.Set_Matrix(context, matrix'Access);
+      end loop;
       Cairo.Stroke(context);
       --
       -- Draw zero degree triangle
@@ -229,10 +211,10 @@ package body bbs.widget.ai is
       Cairo.Set_Line_Width(context, 1.0);
       set_color(context, color_white);
       Cairo.Rotate(context, Glib.Gdouble((180)*Ada.Numerics.Pi/180.0));
-      Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius));
-      Cairo.Line_To(context, -10.0, Glib.Gdouble(self.radius + 10.0));
-      Cairo.Line_To(context, 10.0, Glib.Gdouble(self.radius + 10.0));
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
+      Cairo.Move_To(context, 0.0, 125.0);
+      Cairo.Line_To(context, -10.0, 135.0);
+      Cairo.Line_To(context, 10.0, 135.0);
+      Cairo.Line_To(context, 0.0, 125.0);
       Cairo.Stroke(context);
       --
       -- Draw a horizon line
@@ -252,10 +234,10 @@ package body bbs.widget.ai is
       Cairo.Rotate(context, Glib.Gdouble((self.roll + 180.0)*Ada.Numerics.Pi/180.0));
       Cairo.Set_Line_Width(context, 1.0);
       set_color(context, color_white);
-      Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 5.0));
-      Cairo.Line_To(context, -10.0, Glib.Gdouble(self.radius - 15.0));
-      Cairo.Line_To(context, 10.0, Glib.Gdouble(self.radius - 15.0));
-      Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius - 5.0));
+      Cairo.Move_To(context, 0.0, 120.0);
+      Cairo.Line_To(context, -10.0, 110.0);
+      Cairo.Line_To(context, 10.0, 110.0);
+      Cairo.Line_To(context, 0.0, 120.0);
       Cairo.Stroke(context);
    end;
    --

@@ -34,7 +34,6 @@ package body bbs.widget.compass is
       self.value := 0.0;
       self.pointer := 0.0;
       self.bug := 0.0;
-      self.radius := Float(width - 50)/2.0;
       self.size := width;
       self.slew := false;
       self.failed := False;
@@ -111,6 +110,8 @@ package body bbs.widget.compass is
       else
          Cairo.Translate(context, Glib.Gdouble(Float(me.size)/2.0),
                          Glib.Gdouble(Float(me.size)/2.0));
+         Cairo.Scale(context, Glib.Gdouble(float(me.size) / 300.0),
+                     Glib.Gdouble(float(me.size) / 300.0));
          Cairo.Get_Matrix(context, matrix'Access);
          me.draw_background(context);
          Cairo.Set_Matrix(context, matrix'Access);
@@ -138,7 +139,7 @@ package body bbs.widget.compass is
       --
       Cairo.Set_Line_Width(context, 4.0);
       set_color(context, color_white);
-      Cairo.Arc(context, 0.0, 0.0, Glib.Gdouble(self.radius), 0.0, Glib.Gdouble(two_pi));
+      Cairo.Arc(context, 0.0, 0.0, 125.0, 0.0, Glib.Gdouble(two_pi));
       Cairo.Stroke(context);
       --
       -- First draw the major ticks
@@ -149,8 +150,8 @@ package body bbs.widget.compass is
       for x in 0 .. (ticks - 1) loop
          Cairo.Set_Matrix(context, matrix'Access);
          Cairo.Rotate(context, Glib.Gdouble(float(x)*two_pi/float(ticks)));
-         Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 10.0));
-         Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius + 5.0));
+         Cairo.Move_To(context, 0.0, 115.0);
+         Cairo.Line_To(context, 0.0, 130.0);
       end loop;
       Cairo.Stroke(context);
       --
@@ -162,8 +163,8 @@ package body bbs.widget.compass is
       for x in 0 .. (ticks - 1) loop
          Cairo.Set_Matrix(context, matrix'Access);
          Cairo.Rotate(context, Glib.Gdouble(float(x)*two_pi/float(ticks)));
-         Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius - 5.0));
-         Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
+         Cairo.Move_To(context, 0.0, 120.0);
+         Cairo.Line_To(context, 0.0, 125.0);
       end loop;
       Cairo.Stroke(context);
       --
@@ -174,10 +175,10 @@ package body bbs.widget.compass is
          Cairo.Set_Line_Width(context, 1.0);
          Cairo.Set_Matrix(context, matrix'Access);
          Cairo.Rotate(context, Glib.Gdouble(self.bug*Ada.Numerics.Pi/180.0));
-         Cairo.Move_To(context, 0.0, Glib.Gdouble(self.radius));
-         Cairo.Line_To(context, -10.0, Glib.Gdouble(self.radius + 15.0));
-         Cairo.Line_To(context, 10.0, Glib.Gdouble(self.radius + 15.0));
-         Cairo.Line_To(context, 0.0, Glib.Gdouble(self.radius));
+         Cairo.Move_To(context, 0.0, 125.0);
+         Cairo.Line_To(context, -10.0, 140.0);
+         Cairo.Line_To(context, 10.0, 110.0);
+         Cairo.Line_To(context, 0.0, 125.0);
          Cairo.Fill(context);
       end if;
       --
@@ -191,15 +192,15 @@ package body bbs.widget.compass is
          Cairo.Rotate(context, Glib.Gdouble(float(x)*two_pi/float(ticks)));
          case x is
             when 0 =>
-               center_text(context, self.radius + 15.0, "N");
+               center_text(context, 140.0, "N");
             when 3 =>
-               center_text(context, self.radius + 15.0, "E");
+               center_text(context, 140.0, "E");
             when 6 =>
-               center_text(context, self.radius + 15.0, "S");
+               center_text(context, 140.0, "S");
             when 9 =>
-               center_text(context, self.radius + 15.0, "W");
+               center_text(context, 140.0, "W");
             when others =>
-               center_text(context, self.radius + 15.0, Integer'Image(x*3));
+               center_text(context, 140.0, Integer'Image(x*3));
          end case;
       end loop;
    end;
@@ -219,8 +220,6 @@ package body bbs.widget.compass is
       --
       Cairo.Set_Matrix(context, matrix'Access);
       Cairo.Rotate(context, Glib.Gdouble(two_pi/1000.0));
-      Cairo.Scale(context, Glib.Gdouble(float(self.size) / 300.0),
-                  Glib.Gdouble(float(self.size) / 300.0));
       set_color(context, color_grey9);
       Cairo.Move_To(context, 5.0, 75.0);
       Cairo.Line_To(context, 0.0, 115.0);
@@ -268,7 +267,7 @@ package body bbs.widget.compass is
    procedure draw_failed(Self : access bbs_compass_record'Class; context : Cairo.Cairo_Context) is
    begin
       Cairo.Set_Line_Width(context, 5.0);
-      set_color(context, color_white);
+      set_color(context, color_fail);
       Cairo.Move_To(context, 0.0, 0.0);
       Cairo.Line_To(context, Glib.Gdouble(Float(self.size)), Glib.Gdouble(Float(self.size)));
       Cairo.Move_To(context, 0.0, Glib.Gdouble(Float(self.size)));

@@ -86,7 +86,6 @@ private
       record
          major : Integer;
          minor : Integer;
-         radius : Float;
          size : Integer;
          arc_start : Float;
          arc_end : Float;

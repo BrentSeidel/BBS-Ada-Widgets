@@ -1,3 +1,8 @@
+--
+--   author: Brent Seidel
+--   version: V00.01
+--   date: 2-Feb-2016
+--
 with Gtk.Drawing_Area;
 with Cairo;
 package bbs.widget is
@@ -5,10 +10,6 @@ package bbs.widget is
    -- This is the base package for my custom widgets.  It contains some routines
    -- common to all of my widgets.
    --
-   author : constant String := "Brent Seidel";
-   version : constant String := "V00.01";
-   date : constant String := "2-Feb-2016";
-
 private
    --
    -- This is some utility stuff that is used by all widgets, but not really
@@ -19,9 +20,9 @@ private
    --
    type RGB_color is
       record
-         R : float;
-         G : float;
-         B : float;
+         R : Cairo.Color_Range;
+         G : Cairo.Color_Range;
+         B : Cairo.Color_Range;
       end record;
    --
    -- Now a procedure to set the color

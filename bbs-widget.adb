@@ -5,8 +5,7 @@ package body bbs.widget is
    --
    procedure set_color(c : Cairo.Cairo_Context; color : RGB_color) is
    begin
-      Cairo.Set_Source_Rgb(c, Glib.Gdouble(color.R),
-                           Glib.Gdouble(color.G), Glib.Gdouble(color.B));
+      Cairo.Set_Source_Rgb(c, color.R, color.G, color.B);
    end;
    --
    procedure center_text(c : Cairo.Cairo_Context; y : Float; text : String) is

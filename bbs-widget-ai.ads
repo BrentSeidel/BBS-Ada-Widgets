@@ -69,7 +69,6 @@ package bbs.widget.ai is
 private
    type bbs_ai_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with
       record
-         radius : Float;
          size : Integer;
          pitch : Float;
          roll : Float;

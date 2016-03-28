@@ -33,7 +33,6 @@ package body bbs.widget.turn is
    begin
       self.value := 0.0;
       self.pointer := 0.0;
-      self.radius := Float(width - 50)/2.0;
       self.size := width;
       self.slip := 0.0;
       self.slew := false;

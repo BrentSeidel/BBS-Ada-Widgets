@@ -73,7 +73,6 @@ package bbs.widget.turn is
 private
    type bbs_turn_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with
       record
-         radius : Float;
          size : Integer;
          value : Float;
          slew_rate : Float;
