@@ -172,12 +172,11 @@ package body bbs.widget.compass is
       --
       if (self.bug_state) then
          set_color(context, color_grey5);
-         Cairo.Set_Line_Width(context, 1.0);
          Cairo.Set_Matrix(context, matrix'Access);
          Cairo.Rotate(context, Glib.Gdouble(self.bug*Ada.Numerics.Pi/180.0));
          Cairo.Move_To(context, 0.0, 125.0);
          Cairo.Line_To(context, -10.0, 140.0);
-         Cairo.Line_To(context, 10.0, 110.0);
+         Cairo.Line_To(context, 10.0, 140.0);
          Cairo.Line_To(context, 0.0, 125.0);
          Cairo.Fill(context);
       end if;

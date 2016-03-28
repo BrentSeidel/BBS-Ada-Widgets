@@ -80,6 +80,11 @@ package bbs.widget.airspeed is
    procedure set_Vfe(self : in out bbs_airspeed_record'Class; valid : Boolean; value : Float);
    procedure set_Vno(self : in out bbs_airspeed_record'Class; valid : Boolean; value : Float);
    procedure set_Vne(self : in out bbs_airspeed_record'Class; valid : Boolean; value : Float);
+   --
+   -- Sets a airspeed bug.  If state is true, the bug is shown.  If state is false,
+   -- the bug is not shown and the value is ignored.
+   --
+   procedure set_bug(self : in out bbs_airspeed_record'Class; state : Boolean; value : Float);
 
 private
    type bbs_airspeed_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with
@@ -96,6 +101,8 @@ private
          Vne : Float;
          min : Float;
          max : Float;
+         bug : Float;
+         bug_state : Boolean;
          value : Float;
          slew_rate : Float;
          pointer : Float;

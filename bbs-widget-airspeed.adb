@@ -47,6 +47,8 @@ package body bbs.widget.airspeed is
       self.Vs1 := 0.0;
       self.Vno := maximum;
       self.Vne := maximum;
+      self.bug := 0.0;
+      self.bug_state := False;
       self.vs0_present := False;
       self.vfe_present := False;
       self.Vno_present := False;
@@ -105,6 +107,13 @@ package body bbs.widget.airspeed is
    begin
       self.Vne := value;
       self.Vne_present := valid;
+      self.Queue_Draw;
+   end;
+   --
+   procedure set_bug(self : in out bbs_airspeed_record'Class; state : Boolean; value : Float) is
+   begin
+      self.bug := value;
+      self.bug_state := state;
       self.Queue_Draw;
    end;
    --
@@ -264,8 +273,23 @@ package body bbs.widget.airspeed is
       set_color(context, color_white);
       Cairo.Get_Matrix(context, matrix'Access);
       --
-      -- First draw the major ticks
+      -- First draw the heading bug, if needed
       --
+      if (self.bug_state) then
+         set_color(context, color_grey5);
+         Cairo.Set_Matrix(context, matrix'Access);
+         Cairo.Rotate(context, Glib.Gdouble(self.arc_start +
+                      (self.bug - self.min)*(two_pi - 1.0)/(self.max - self.min)));
+         Cairo.Move_To(context, 0.0, 125.0);
+         Cairo.Line_To(context, -10.0, 140.0);
+         Cairo.Line_To(context, 10.0, 140.0);
+         Cairo.Line_To(context, 0.0, 125.0);
+         Cairo.Fill(context);
+      end if;
+      --
+      -- Then draw the major ticks
+      --
+      set_color(context, color_white);
       ticks := self.major;
       if (ticks > 0) then
          Cairo.Set_Line_Width(context, 2.0);
