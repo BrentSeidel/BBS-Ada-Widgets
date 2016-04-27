@@ -96,6 +96,7 @@ private
          callback_id : Glib.Guint;
       end record;
 
+   two_pi : constant := 2.0*Ada.Numerics.Pi;
 
    klass : aliased Glib.Object.Ada_GObject_Class := Glib.Object.Uninitialized_Class;
 
