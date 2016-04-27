@@ -5,6 +5,11 @@
 -- This is a simple attitude indicator widget.  It provides an indication of
 -- pitch and roll similar to attitude indicators found in airplanes.
 --
+-- This file is copyrighted (C) 2016 by Brent Seidel.  It is available under
+-- version 3 of the GPL.  See the file LICENSE for more details.
+--
+-- Please contact the author if you are interested in other licensing arrangements.
+--
 with Ada.Text_IO;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Numerics;
@@ -80,7 +85,7 @@ private
          callback_id : Glib.Guint;
       end record;
 
-   two_pi : constant Float := 2.0*Ada.Numerics.Pi;
+   two_pi : constant := 2.0*Ada.Numerics.Pi;
    sqrt_2 : constant Float := math.Sqrt(2.0);
 
    klass : aliased Glib.Object.Ada_GObject_Class := Glib.Object.Uninitialized_Class;

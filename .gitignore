@@ -10,3 +10,7 @@
 *.db
 
 *.xml
+
+gnatinspect.db-wal
+
+gnatinspect.db-shm

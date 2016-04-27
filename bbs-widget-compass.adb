@@ -1,3 +1,9 @@
+--
+-- This file is copyrighted (C) 2016 by Brent Seidel.  It is available under
+-- version 3 of the GPL.  See the file LICENSE for more details.
+--
+-- Please contact the author if you are interested in other licensing arrangements.
+--
 package body bbs.widget.compass is
 
    function Get_Type return Glib.GType is
@@ -52,7 +58,16 @@ package body bbs.widget.compass is
          self.Queue_Draw;
       end if;
    end;
-
+   --
+   procedure set_value(self : in out bbs_compass_record'Class; value : BBS.units.ang_d) is
+   begin
+      self.value := Float(value);
+      if (not self.slew) then
+         self.pointer := self.value;
+         self.Queue_Draw;
+      end if;
+   end;
+   --
    procedure set_failed(self : in out bbs_compass_record'Class; value : Boolean) is
    begin
       self.failed := value;
@@ -74,6 +89,13 @@ package body bbs.widget.compass is
    procedure set_bug(self : in out bbs_compass_record'Class; state : Boolean; value : Float) is
    begin
       self.bug := value;
+      self.bug_state := state;
+      self.Queue_Draw;
+   end;
+   --
+   procedure set_bug(self : in out bbs_compass_record'Class; state : Boolean; value : BBS.units.ang_d) is
+   begin
+      self.bug := Float(value);
       self.bug_state := state;
       self.Queue_Draw;
    end;

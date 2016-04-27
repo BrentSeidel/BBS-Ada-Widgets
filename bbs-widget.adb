@@ -1,3 +1,9 @@
+--
+-- This file is copyrighted (C) 2016 by Brent Seidel.  It is available under
+-- version 3 of the GPL.  See the file LICENSE for more details.
+--
+-- Please contact the author if you are interested in other licensing arrangements.
+--
 with Interfaces.C.Strings;
 with Glib;
 use type Glib.Gdouble;

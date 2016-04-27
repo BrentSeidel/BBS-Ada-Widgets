@@ -4,6 +4,11 @@
 --
 -- This is a simple turn coordinator similar to the ones found in light aircraft.t
 --
+-- This file is copyrighted (C) 2016 by Brent Seidel.  It is available under
+-- version 3 of the GPL.  See the file LICENSE for more details.
+--
+-- Please contact the author if you are interested in other licensing arrangements.
+--
 with Ada.Text_IO;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Numerics;
@@ -24,6 +29,7 @@ with Glib.Object;
 with Glib.Properties;
 with Cairo;
 with Interfaces.C.Strings;
+with BBS.units;
 package bbs.widget.turn is
    --
    type bbs_turn_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
@@ -51,7 +57,14 @@ package bbs.widget.turn is
    -- scale value is a standard rate turn - 3 degrees/second or a complete 360
    -- degree turn in 2 minutes.
    --
+   procedure set_value(self : in out bbs_turn_record'Class; value : BBS.units.rot_d_s);
+   --
+   -- This simply sets the value for the turn coordinator to display.  The full-
+   -- scale value is a standard rate turn - 3 degrees/second or a complete 360
+   -- degree turn in 2 minutes.
+   --
    procedure set_value(self : in out bbs_turn_record'Class; value : Float);
+   pragma Obsolescent(message => "Use typed version instead");
    --
    -- This is called when the data source for the turn has failed or is
    -- unavailable.  It replaces the turn display with a red "X".
@@ -83,7 +96,6 @@ private
          callback_id : Glib.Guint;
       end record;
 
-   two_pi : constant Float := 2.0*Ada.Numerics.Pi;
 
    klass : aliased Glib.Object.Ada_GObject_Class := Glib.Object.Uninitialized_Class;
 

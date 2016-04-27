@@ -4,6 +4,11 @@
 --
 -- This is a simple compass similar to the ones found in light aircraft.
 --
+-- This file is copyrighted (C) 2016 by Brent Seidel.  It is available under
+-- version 3 of the GPL.  See the file LICENSE for more details.
+--
+-- Please contact the author if you are interested in other licensing arrangements.
+--
 with Ada.Text_IO;
 with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Numerics;
@@ -23,6 +28,7 @@ use type Glib.Gint;
 with Glib.Object;
 with Glib.Properties;
 with Cairo;
+with BBS.units;
 package bbs.widget.compass is
    --
    type bbs_compass_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
@@ -50,6 +56,7 @@ package bbs.widget.compass is
    -- the range that the compass can display.
    --
    procedure set_value(self : in out bbs_compass_record'Class; value : Float);
+   procedure set_value(self : in out bbs_compass_record'Class; value : BBS.units.ang_d);
    --
    -- This is called when the data source for the compass has failed or is
    -- unavailable.  It replaces the compass display with a red "X".
@@ -68,6 +75,7 @@ package bbs.widget.compass is
    -- the bug is not shown and the value is ignored.
    --
    procedure set_bug(self : in out bbs_compass_record'Class; state : Boolean; value : Float);
+   procedure set_bug(self : in out bbs_compass_record'Class; state : Boolean; value : BBS.units.ang_d);
 
 private
    type bbs_compass_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with
@@ -83,7 +91,7 @@ private
          callback_id : Glib.Guint;
       end record;
 
-   two_pi : constant Float := 2.0*Ada.Numerics.Pi;
+   two_pi : constant := 2.0*Ada.Numerics.Pi;
 
    klass : aliased Glib.Object.Ada_GObject_Class := Glib.Object.Uninitialized_Class;
 

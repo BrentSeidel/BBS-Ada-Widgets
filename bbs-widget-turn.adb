@@ -1,3 +1,9 @@
+--
+-- This file is copyrighted (C) 2016 by Brent Seidel.  It is available under
+-- version 3 of the GPL.  See the file LICENSE for more details.
+--
+-- Please contact the author if you are interested in other licensing arrangements.
+--
 package body bbs.widget.turn is
 
    function Get_Type return Glib.GType is
@@ -43,6 +49,24 @@ package body bbs.widget.turn is
       self.Set_Has_Window(True);
    end;
    --
+   procedure set_value(self : in out bbs_turn_record'Class; value : BBS.units.rot_d_s) is
+      t : constant Float := Float(value);
+   begin
+      if (t > 6.0) then
+         self.value := 6.0;
+      else
+         if (t < -6.0) then
+            self.value := -6.0;
+         else
+            self.value := t;
+         end if;
+      end if;
+      if (not self.slew) then
+         self.pointer := self.value;
+         self.Queue_Draw;
+      end if;
+   end;
+   --
    procedure set_value(self : in out bbs_turn_record'Class; value : Float) is
    begin
       if (value > 6.0) then
@@ -59,7 +83,7 @@ package body bbs.widget.turn is
          self.Queue_Draw;
       end if;
    end;
-
+   --
    procedure set_failed(self : in out bbs_turn_record'Class; value : Boolean) is
    begin
       self.failed := value;
