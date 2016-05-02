@@ -16,13 +16,13 @@ package body bbs.widget.ai is
           Parameters   => Glib.Object.Null_Parameter_Types);
       return Klass.The_Type;
    end;
-
+   --
    procedure gtk_new(self : in out bbs_ai) is
    begin
       self := new bbs_ai_record;
       initialize(self);
    end;
-
+   --
    procedure initialize(self : not null access bbs_ai_record'class) is
    begin
       Glib.Object.G_New(Object => self,
@@ -50,7 +50,7 @@ package body bbs.widget.ai is
       self.Set_Window(parent);
       self.Set_Has_Window(True);
    end;
-
+   --
    procedure set_value(self : in out bbs_ai_record'Class; pitch : Float; roll : Float) is
    begin
       self.pitch := pitch;
@@ -61,13 +61,25 @@ package body bbs.widget.ai is
          self.Queue_Draw;
       end if;
    end;
-
+   --
+   procedure set_value(self : in out bbs_ai_record'Class;
+                       pitch : BBS.units.ang_d; roll : BBS.units.ang_d) is
+   begin
+      self.pitch := Float(pitch);
+      self.roll := Float(roll);
+      if (not self.slew) then
+         self.dsp_pitch := self.pitch;
+         self.dsp_roll := self.roll;
+         self.Queue_Draw;
+      end if;
+   end;
+   --
    procedure set_failed(self : in out bbs_ai_record'Class; value : Boolean) is
    begin
       self.failed := value;
       self.Queue_Draw;
    end;
-
+   --
    procedure set_slew(self : in out bbs_ai_record'Class; value : Boolean; rate : Float) is
    begin
       self.slew_rate := rate;
@@ -80,7 +92,7 @@ package body bbs.widget.ai is
          self.dsp_roll := self.roll;
       end if;
    end;
-
+   --
    function slew_handler(Self : not null access Gtk.Widget.Gtk_Widget_Record'Class;
                          Frame_Clock : not null access Gdk.Frame_Clock.Gdk_Frame_Clock_Record'Class) return Boolean is
       me : constant bbs_ai := bbs_ai(self);
@@ -116,7 +128,7 @@ package body bbs.widget.ai is
       end if;
       return True;
    end;
-
+   --
    function draw_ai(Self : access Gtk.Widget.Gtk_Widget_Record'Class; context : Cairo.Cairo_Context) return boolean is
       me : constant bbs_ai := bbs_ai(self);
       matrix : aliased Cairo.Cairo_Matrix;
@@ -260,6 +272,5 @@ package body bbs.widget.ai is
       Cairo.Line_To(context, Glib.Gdouble(Float(self.size)), 0.0);
       Cairo.Stroke(context);
    end;
-
-
+   --
 end;

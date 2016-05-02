@@ -29,6 +29,7 @@ use type Glib.Gint;
 with Glib.Object;
 with Glib.Properties;
 with Cairo;
+with BBS.units;
 package bbs.widget.ai is
    --
    type bbs_ai_record is new Gtk.Drawing_Area.Gtk_Drawing_Area_Record with private;
@@ -57,7 +58,9 @@ package bbs.widget.ai is
    -- the range that the ai can display.
    --
    procedure set_value(self : in out bbs_ai_record'Class; pitch : Float; roll : Float);
-   --
+   procedure set_value(self : in out bbs_ai_record'Class;
+                       pitch : BBS.units.ang_d; roll : BBS.units.ang_d);
+  --
    -- This is called when the data source for the ai has failed or is
    -- unavailable.  It replaces the ai display with a red "X".
    --
