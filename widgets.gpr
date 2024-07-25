@@ -11,7 +11,9 @@ project Widgets is
    case Library_Type is
       when "static" =>
          for Main use ();
-         for Source_Dirs use ("./**");
+         for Source_Dirs use ("src");
+         for Object_Dir use "obj";
+         for Library_Dir use "lib";
       when "relocatable" =>
          for Main use ("main.adb");
          for Source_Files use ("main.adb");

@@ -1,16 +1,23 @@
-
+#
+#  Ada build files
 *.ali
-
 *.cswi
-
 *.o
-
 *.cgpr
-
 *.db
-
 *.xml
-
 gnatinspect.db-wal
-
 gnatinspect.db-shm
+
+# Build directories
+obj/*
+lib/*
+#
+#  LaTeX intermediate files
+#
+*.aux
+*.bbl
+*.blg
+*.log
+*.toc
+*.synctex.gz
