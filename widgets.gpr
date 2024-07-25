@@ -9,11 +9,9 @@ project Widgets is
    Library_Type : Gtkada_Kind_Type := external ("LIBRARY_TYPE");
 
    case Library_Type is
-
       when "static" =>
          for Main use ();
          for Source_Dirs use ("./**");
-
       when "relocatable" =>
          for Main use ("main.adb");
          for Source_Files use ("main.adb");
@@ -24,50 +22,35 @@ project Widgets is
    end Naming;
 
    package Compiler is
-
       case Library_Type is
-
          when "static" =>
             for Default_Switches ("ada") use ("-gnatw.eDU.Y", "-gnat12", "-g", "-gnatf");
-
          when "relocatable" =>
             for Default_Switches ("ada") use ("-gnat12");
       end case;
    end Compiler;
 
    package Binder is
-
       case Library_Type is
-
          when "static" =>
             for Default_Switches ("ada") use ("-E");
-
          when "relocatable" =>
-
       end case;
    end Binder;
 
    package Linker is
-
       case Library_Type is
-
          when "static" =>
             for Default_Switches ("ada") use ("-g");
-
          when "relocatable" =>
-
       end case;
    end Linker;
 
    package Builder is
-
       case Library_Type is
-
          when "static" =>
             for Default_Switches ("ada") use ("-s", "-j3", "--create-map-file");
-
          when "relocatable" =>
-
       end case;
    end Builder;
 
